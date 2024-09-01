@@ -9,14 +9,14 @@ namespace MVC_Humsafar_Mubarak.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ICandidateRepository _candidateRepository;
+       
         private readonly IPhotoService _photoService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMediator _mediator;
 
-        public HomeController(ICandidateRepository candidateRepository, IHttpContextAccessor httpContextAccessor)
+        public HomeController(IHttpContextAccessor httpContextAccessor)
         {
-            _candidateRepository = candidateRepository;
+          
             _httpContextAccessor = httpContextAccessor;
         }
 
