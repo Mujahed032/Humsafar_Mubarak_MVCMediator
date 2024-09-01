@@ -1,32 +1,40 @@
+﻿using Application.Candidates.Queries.ListOfCandidates.GetAllCandidatesList;
+using Application.Interfaces.Persistence;
+using MediatR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
-using MVCMediatorHumsafar.Models;
-using System.Diagnostics;
+using MVC_Humsafar_Mubarak.Interface;
 
-namespace MVCMediatorHumsafar.Controllers
+namespace MVC_Humsafar_Mubarak.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ICandidateRepository _candidateRepository;
+        private readonly IPhotoService _photoService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMediator _mediator;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ICandidateRepository candidateRepository, IHttpContextAccessor httpContextAccessor)
         {
-            _logger = logger;
+            _candidateRepository = candidateRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var candidatesX = await _mediator.Send(new GetAllCandidatesListMediatR.Query());           
+            return View(candidatesX);
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Detail(int id)
         {
-            return View();
-        }
+            var profile = await _candidateRepository.GetProfileByIdAsNoTracking(id);
+            if (profile == null)
+            {
+                return NotFound();
+            }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(profile);
         }
     }
 }
